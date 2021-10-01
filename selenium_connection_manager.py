@@ -6,5 +6,5 @@ class SeleniumConnectionManager:
     driver = webdriver.Chrome(executable_path=cdp)
 
     @staticmethod
-    def connect_to_zillow(driver):
-        driver.get('https://www.zillow.com/homes/for_rent/')
+    def connect_to_google(driver):
+        driver.get('https://forms.gle/Ymi7uyhk1MsxUWC38')

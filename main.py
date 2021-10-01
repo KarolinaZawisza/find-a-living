@@ -1,5 +1,8 @@
 import requests as requests
 from bs4 import BeautifulSoup
+from search_result_manager import SearchResultManager
+from selenium_connection_manager import SeleniumConnectionManager
+from google_form_manager import GoogleFormManager
 
 header = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36",
@@ -16,5 +19,21 @@ results_links = [f'https://www.zillow.com{link["href"]}' if 'http' not in link['
 results_addresses = [address.get_text() for address in soup.select('.list-card-addr')]
 results_prices = [price.get_text() for price in soup.select('.list-card-price')]
 
+search_results = []
+for result_data in range(len(results_links)):
+    result = SearchResultManager(results_addresses[result_data],
+                                 results_prices[result_data],
+                                 results_links[result_data])
+    search_results.append(result)
 
+driver = SeleniumConnectionManager.driver
+SeleniumConnectionManager.connect_to_google(driver)
+google_form = GoogleFormManager(driver)
+try:
+    google_form.fill_in_google_form(search_results)
+except Exception as exception:
+    print(f'{exception}')
+    google_form.quit()
+
+google_form.quit()
 
